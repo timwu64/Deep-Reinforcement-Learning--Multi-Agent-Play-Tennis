@@ -36,7 +36,7 @@ Tennis
 
 -   The model weights are saved in the (MADDPG\_ckpt) folder
 
-### Deep Deterministic Policy Gradient (DDPG) Implementation**
+### Deep Deterministic Policy Gradient (DDPG) Implementation
 
 The solution is based on MADDPG architecture
 
@@ -59,29 +59,51 @@ fc2\_units=128
 The Agent Hyperparameters:
 
 \[AGENT INFO\] DDPG constructor initialized parameters:
+
 num\_agents = 2 
+
 state\_size = 24 
+
 action\_size = 2
+
 seed = 123 \# random seed number
+
 n\_episodes\_max = 10000 \# number of training episodes
+
 max\_t = 1000 \# number of timesteps per episode
+
 actor\_fc1\_units = 128 \# actor network hidden layer \#1 number of unit
+
 actor\_fc2\_units = 128 \# actor network hidden layer \#2 number of unit
+
 critic\_fcs1\_units = 128 \# critic network hidden layer \#1 number of
 unit
+
 critic\_fc2\_units = 128 \# critic network hidden layer \#2 number of
 unit\
+
 BUFFER\_SIZE = int(1e6) \# replay buffer size
+
 BATCH\_SIZE = 128 \# minibatch size
+
 GAMMA = 0.99 \# discount factor
+
 TAU = 0.2 \# for soft update of target parameters
+
 LR\_ACTOR = 2e-4 \# learning rate of the actor
+
 LR\_CRITIC = 2e-4 \# learning rate of the critic
+
 WEIGHT\_DECAY = 0.00 \# L2 weight decay
+
 OU\_MU = 0.0 \# OUNoise mu
+
 OU\_THETA = 0.15 \# OUNoise theta
+
 OU\_SIGMA = 0.1 \# OUNoise sigma
+
 UPDATE\_EVERY\_T\_STEPS = 2 \# timesteps between updates
+
 NUM\_OF\_UPDATES = 1 \# num of update passes when updating
 
 ### Results
@@ -97,8 +119,9 @@ Environment solved in 2420 episodes! Average Score: 0.50
 ![Tennis Result][image1]
 
 ### Multi-Agent Deep Deterministic Policy Gradient (MADDPG)
-I refer to this paper - Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments, by Lowe and Wu, along with other researchers from OpenAI, UC Berkeley, and McGill University. 
+In this project, I used my previous work vanilla (DDPG) and expanded it with the Multi-Agent approach -refer to this paper "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments", by Lowe and Wu, along with other researchers from OpenAI, UC Berkeley, and McGill University. 
 ![MADDPG][image2]
+
 
 ### Future Improvements
 
