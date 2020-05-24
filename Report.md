@@ -36,9 +36,46 @@ Tennis
 
 -   The model weights are saved in the (MADDPG\_ckpt) folder
 
-### Deep Deterministic Policy Gradient (DDPG) Implementation
+### Deep Multi-Agent Deterministic Policy Gradient (MADDPG) Implementation
 
-The solution is based on MADDPG architecture
+#### The solution is based on MADDPG architecture.  
+
+After experimenting with different numbers of hidden layers (particularly 1, 2) I concluded that 2 standard feed-forward 64 units layers with ReLu activation give good results. With state space dimension of 37 and output/action space dimension of 4 the problem does not need high numbers of hidden layers and high number of units within the layers.
+
+### What approraches have been use?
+####Experience Replay
+One of the problems listed in Deepmind’s paper is that the agent sometimes face highly correlated state and actions and it makes hard converge.  Experience replay allows the RL agent to learn from past experience and give 2 major advantages. 
+•	More efficient use of previous experience by learning with its multiple times. This is key when gaining real-world experience is costly, we can get full use of it. 
+•	Better convergence behavior when training a function approximator.
+
+Each experience is stored in a replay buffer as the agent interacts with the environment. The replay buffer contains a collection of experience tuples with the state, action, reward, and next state (s, a, r, s'). The agent then samples from this buffer as part of the learning step. Experiences are sampled randomly, so that the data is uncorrelated. This prevents action values from oscillating or diverging catastrophically, since a naive learning algorithm could otherwise become biased by correlations between sequential experience tuples.
+
+Therefore, I used the experience replay buffer that allows the RL agent to learn from past experience.  The implementation of the replay buffer can be found in the class Agent(): in the `maddpg_agent.py` file of the source code.  Both agents sharing same experience buffer, the experiences utilized by the central critic, which allow both of the agents to learn from each others' experiences.
+
+#### Exploration vs Exploitation
+One challenge with the Q-function is choosing which action to take while the agent is still learning the optimal policy.  Should the agent go for best decision vs. more information?  This is known as the exploration vs. exploitation dilemma.
+
+- Ornstein-Uhlenbeck Noise 
+I added the Ornstein-Uhlenbeck noise to the agents for each time step as suggested in "CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING" paper.  Ornstein-Uhlenbeck process correlated to previous noise and therefore tends to stay in the same direction for longer durations.  I reduced the hyperparameters sigma: the volatility parameter to give the reasonable result.  Please check the detail code implemenation of the Ornstein-Uhlenbeck noise in the `maddpg_agent.py` file of the source code.
+
+- Epsilon Greedy Algorithm
+I did not implement the Epsilon Greedy Algorithm in this project.  However, this fucntion can easily be added as future improvement.
+
+
+#### Why choose the particular hyperparameters
+
+I started the hyperparameters from using the paper "Human-level control through deep reinforcement learning" [Nature. 2015], "CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING", and my previous Udacity Deep Reinforcement Learning projects. 
+
+After experimenting with different numbers of hidden layers from [400,300] to [256, 256], [128, 128].  I concluded that 2 standard feed-forward 128 units layers with ReLu activation with Batch normalization give good results. With state space dimension = 24, this problem does not need high numbers of hidden layers and high number of units within the layers.
+
+#### Actor/Critic model architecture
+Another problem is that Deep Q-Networks can overestimate Q-values.  To solve this issue, we need to apply two neural networks, one neural network calculates the Target value and the other neural network chooses the best action.  In addition, besides high variance of gradients, another problem with policy gradients occurs trajectories have a cumulative reward of 0. The essence of policy gradient is increasing the probabilities for “good” actions and decreasing those of “bad” actions in the policy distributionhese issues contribute to the instability and slow convergence of vanilla policy gradient methods.  The combine the advantage of value base and policy based algorithms and imporve all the instabliites that mentationed above, I choose Actor/Critic for this project.
+
+Using Actor/Critic 
+- The “Critic” estimates the value function. This could be the action-value (the Q value) or state-value (the V value).
+- The “Actor” updates the policy distribution in the direction suggested by the Critic (such as with policy gradients).
+
+The Actor/Critic implementation can be found in the class Agent(): in the `maddpg_agent.py` file of the source code
 
 The (Actor Critic) Network Architecture and Agent Hyperparameters
 
