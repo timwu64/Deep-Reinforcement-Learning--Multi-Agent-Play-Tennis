@@ -52,7 +52,7 @@ cooperative behavior (e.g. with humans) at execution time" [1]
 
 ### What approraches have been use?
 
-####Experience Replay
+#### Experience Replay
 One of the problems listed in Deepmind’s paper is that the agent sometimes face highly correlated state and actions and it makes hard converge.  Experience replay allows the RL agent to learn from past experience and give 2 major advantages. 
 •	More efficient use of previous experience by learning with its multiple times. This is key when gaining real-world experience is costly, we can get full use of it. 
 •	Better convergence behavior when training a function approximator.
