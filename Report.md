@@ -36,11 +36,19 @@ Tennis
 
 -   The model weights are saved in the (MADDPG\_ckpt) folder
 
-### Deep Multi-Agent Deterministic Policy Gradient (MADDPG) Implementation
-
-#### The solution is based on MADDPG architecture.  
-
-After experimenting with different numbers of hidden layers (particularly 1, 2) I concluded that 2 standard feed-forward 64 units layers with ReLu activation give good results. With state space dimension of 37 and output/action space dimension of 4 the problem does not need high numbers of hidden layers and high number of units within the layers.
+### The solution is based on Multi-Agent Deep Deterministic Policy Gradient (MADDPG) architecture
+This project involve interaction between 2 agents, where emergent behavior and complexity arise from agents co-evolving together.  As stateed by "Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments" paper, traditional reinforcement learning approaches such as Q-Learning or policy gradient
+are poorly suited to multi-agent environments. One issue is that each agent’s policy is changing
+as training progresses, and the environment becomes non-stationary from the perspective of any
+individual agent (in a way that is not explainable by changes in the agent’s own policy). This presents
+learning stability challenges and prevents the straightforward use of past experience replay.  "MADDPG general-purpose multi-agent learning algorithm that: (1) leads to learned
+policies that only use local information (i.e. their own observations) at execution time, (2) does
+not assume a differentiable model of the environment dynamics or any particular structure on the
+communication method between agents, and (3) is applicable not only to cooperative interaction
+but to competitive or mixed interaction involving both physical and communicative behavior. The
+ability to act in mixed cooperative-competitive environments may be critical for intelligent agents;
+while competitive training provides a natural curriculum for learning, agents must also exhibit
+cooperative behavior (e.g. with humans) at execution time" [1]
 
 ### What approraches have been use?
 ####Experience Replay
@@ -63,7 +71,6 @@ I did not implement the Epsilon Greedy Algorithm in this project.  However, this
 
 
 #### Why choose the particular hyperparameters
-
 I started the hyperparameters from using the paper "Human-level control through deep reinforcement learning" [Nature. 2015], "CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING", and my previous Udacity Deep Reinforcement Learning projects. 
 
 After experimenting with different numbers of hidden layers from [400,300] to [256, 256], [128, 128].  I concluded that 2 standard feed-forward 128 units layers with ReLu activation with Batch normalization give good results. With state space dimension = 24, this problem does not need high numbers of hidden layers and high number of units within the layers.
@@ -77,6 +84,7 @@ Using Actor/Critic
 
 The Actor/Critic implementation can be found in the class Agent(): in the `maddpg_agent.py` file of the source code
 
+After experimenting with different numbers of hidden layers for the Actor/Critic model. I concluded that 2 standard feed-forward 64 units layers with ReLu activation give good results. With state space dimension of 24 does not need high numbers of hidden layers and high number of units within the layers.
 The (Actor Critic) Network Architecture and Agent Hyperparameters
 
 \[MODEL INFO\] Actor initialized with parameters:
