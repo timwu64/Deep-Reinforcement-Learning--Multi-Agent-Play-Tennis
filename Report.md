@@ -85,7 +85,7 @@ Using Actor/Critic
 
 The Actor/Critic implementation can be found in the class Actor() & Critic() in the `maddpg_model.py` file of the source code
 
-After experimenting with different numbers of hidden layers for the Actor/Critic model. I concluded that 2 standard feed-forward 64 units layers with ReLu activation give good results. With state space dimension of 24 does not need high numbers of hidden layers and high number of units within the layers.
+After experimenting with different numbers of hidden layers for the Actor/Critic model. I concluded that 2 standard feed-forward 128 units layers with ReLu activation give good results. With state space dimension of 24 does not need high numbers of hidden layers and high number of units within the layers.
 The (Actor Critic) Network Architecture and Agent Hyperparameters
 
 \[MODEL INFO\] Actor initialized with parameters:
