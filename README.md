@@ -6,7 +6,7 @@
 
 ## Introduction
 
-For this project, I will train the Multi-Agent RL to play tennis 
+For this project, I trained the Multi-Agent RL to play tennis (Shown blow)
 
 ![Trained Agent][image1]
 
@@ -36,10 +36,9 @@ The original Udacity repo for this project can be found [here](https://github.co
 - `config.py` defines the Multi-Agent Deep Deep Deterministic Policy Gradients (DDPG) input and hyperparameters
 
 ### Report
-- `Report.pdf` describe the learning algorithm and the details of the implementation, along with ideas for future work.
+- `Report.md` describe the learning algorithm and the details of the implementation, along with ideas for future work.
 
 ### The Trained Agent
-- `MADDPG_ckpt` fold contains all the weights for both agent 0 and agent 1 actor and critic network
 - `checkpoint_actor_0.pth` & `checkpoint_actor_1.pth` contains the weights for actor network for agent 0 and agent 1
 - `checkpoint_critic_0.pth` & & `checkpoint_critic_1.pth` contains the weights for critic network for agent 0 and agent 1 for the Multi-Agent Deep Deterministic Policy Gradients (DDPG) implementation
 - Please check `Report.md` for details
