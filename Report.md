@@ -83,7 +83,7 @@ Using Actor/Critic
 - The “Critic” estimates the value function. This could be the action-value (the Q value) or state-value (the V value).
 - The “Actor” updates the policy distribution in the direction suggested by the Critic (such as with policy gradients).
 
-The Actor/Critic implementation can be found in the class Agent(): in the `maddpg_agent.py` file of the source code
+The Actor/Critic implementation can be found in the class Actor() & Critic() in the `maddpg_model.py` file of the source code
 
 After experimenting with different numbers of hidden layers for the Actor/Critic model. I concluded that 2 standard feed-forward 64 units layers with ReLu activation give good results. With state space dimension of 24 does not need high numbers of hidden layers and high number of units within the layers.
 The (Actor Critic) Network Architecture and Agent Hyperparameters
