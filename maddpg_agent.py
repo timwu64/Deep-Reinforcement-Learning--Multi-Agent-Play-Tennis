@@ -1,16 +1,24 @@
+# main code that contains the neural network setup
+# policy + critic updates
+
+#############################################################################################################
 import numpy as np
 import random
 import copy
 from collections import namedtuple, deque
-
-from model import Actor, Critic
+from maddpg_model import Actor, Critic
 
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
+#############################################################################################################
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = 'cpu'
 
+#############################################################################################################
+# DDPG for Multi-Agent
+#############################################################################################################
 class Agent():
     """Interacts with and learns from the environment."""
     
@@ -55,33 +63,38 @@ class Agent():
         # Replay memory
         self.memory = ReplayBuffer(self.config.action_size, self.config.buffer_size, self.config.batch_size, self.config.random_seed)
     
-    def step(self, states, actions, rewards, next_states, dones, timestep):
+    def reset(self):
+        self.noise.reset()
+
+    def step(self, states, actions, rewards, next_states, dones, agent_number, timestep):
         """Save experience in replay memory, and use random sample from buffer to learn."""
         # Save experience / reward
-        for state, action, reward, next_state, done in zip(states, actions, rewards, next_states, dones):
-            self.memory.add(state, action, reward, next_state, done)
+        self.memory.add(states, actions, rewards, next_states, dones)
 
         # Learn, if enough samples are available in memory
         if len(self.memory) > self.config.batch_size and timestep % self.config.update_every_t_steps == 0:
             for _ in range(self.config.num_of_updates):
                 experiences = self.memory.sample()
-                self.learn(experiences, self.config.gamma)
-                
-    def act(self, state, add_noise=True):
+                self.learn(experiences, self.config.gamma, agent_number)
+    
+    def act(self, states, add_noise=True):
         """Returns actions for given state as per current policy."""
-        state = torch.from_numpy(state).float().to(device)
+        states = torch.from_numpy(states).float().to(device)
+        actions = np.zeros((self.config.num_agents, self.config.action_size))
         self.actor_local.eval()
         with torch.no_grad():
-            action = self.actor_local(state).cpu().data.numpy()
+            # get action for each agent and concatenate them
+            for agent_num, state in enumerate(states):
+                action = self.actor_local(state).cpu().data.numpy()
+                actions[agent_num, :] = action
         self.actor_local.train()
+        # add noise to actions
         if add_noise:
-            action += self.noise.sample()
-        return np.clip(action, -1, 1)
-
-    def reset(self):
-        self.noise.reset()
-
-    def learn(self, experiences, gamma):
+            actions += self.noise.sample()
+        actions = np.clip(actions, -1, 1)
+        return actions    
+    
+    def learn(self, experiences, gamma, agent_number):
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
         where:
@@ -98,6 +111,10 @@ class Agent():
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
         actions_next = self.actor_target(next_states)
+        if agent_number == 0:
+            actions_next = torch.cat((actions_next, actions[:,2:]), dim=1)
+        else:
+            actions_next = torch.cat((actions[:,:2], actions_next), dim=1)
         Q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
         Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
@@ -112,6 +129,10 @@ class Agent():
         # ---------------------------- update actor ---------------------------- #
         # Compute actor loss
         actions_pred = self.actor_local(states)
+        if agent_number == 0:
+            actions_pred = torch.cat((actions_pred, actions[:,2:]), dim=1)
+        else:
+            actions_pred = torch.cat((actions[:,:2], actions_pred), dim=1)
         actor_loss = -self.critic_local(states, actions_pred).mean()
         # Minimize the loss
         self.actor_optimizer.zero_grad()
@@ -121,7 +142,7 @@ class Agent():
         # ----------------------- update target networks ----------------------- #
         self.soft_update(self.critic_local, self.critic_target, self.config.tau)
         self.soft_update(self.actor_local, self.actor_target, self.config.tau)                     
-
+    
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
         θ_target = τ*θ_local + (1 - τ)*θ_target
@@ -189,7 +210,11 @@ class ReplayBuffer:
         dones = torch.from_numpy(np.vstack([e.done for e in experiences if e is not None]).astype(np.uint8)).float().to(device)
 
         return (states, actions, rewards, next_states, dones)
-
+    
     def __len__(self):
         """Return the current size of internal memory."""
         return len(self.memory)
+    
+#############################################################################################################
+# END
+#############################################################################################################    
