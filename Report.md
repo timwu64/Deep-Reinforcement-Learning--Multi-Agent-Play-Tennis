@@ -64,10 +64,10 @@ Therefore, I used the experience replay buffer that allows the RL agent to learn
 #### Exploration vs Exploitation
 One challenge with the Q-function is choosing which action to take while the agent is still learning the optimal policy.  Should the agent go for best decision vs. more information?  This is known as the exploration vs. exploitation dilemma.
 
-- Ornstein-Uhlenbeck Noise 
+- Ornstein-Uhlenbeck Noise: 
 I added the Ornstein-Uhlenbeck noise to the agents for each time step as suggested in "CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING" paper.  Ornstein-Uhlenbeck process correlated to previous noise and therefore tends to stay in the same direction for longer durations.  I reduced the hyperparameters sigma: the volatility parameter to give the reasonable result.  Please check the detail code implemenation of the Ornstein-Uhlenbeck noise in the `maddpg_agent.py` file of the source code.
 
-- Epsilon Greedy Algorithm
+- Epsilon Greedy Algorithm:
 I did not implement the Epsilon Greedy Algorithm in this project.  However, this fucntion can easily be added as future improvement.
 
 
